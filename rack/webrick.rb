@@ -39,13 +39,16 @@ module Rack
           env["PATH_INFO"] = path[n, path.length-n]
         end
 
-        status, headers, body = @app.call(env)
+        app_res = @app.call(env)
+        if app_res && app_res != 0
+          status, headers, body = app_res
+        end
         
         headers ||= {}
         status  ||= 200
         body    ||= ''
         
-        headers['Content-Length'] = body.length
+        headers['Content-Length'] = body.length.to_s
         
         begin
           res.status = status.to_i

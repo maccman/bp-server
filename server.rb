@@ -20,7 +20,7 @@ rubyCoreletDefinition = {
   'name' => "Server",
   'major_version' => 1,
   'minor_version' => 0,
-  'micro_version' => 2,
+  'micro_version' => 6,
   'documentation' => 'A todo service that tests callbacks from ruby.',
   'functions' =>
   [
