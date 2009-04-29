@@ -22,26 +22,26 @@ rubyCoreletDefinition = {
   'name' => "Server",
   'major_version' => 1,
   'minor_version' => 0,
-  'micro_version' => 8,
-  'documentation' => 'A todo service that tests callbacks from ruby.',
+  'micro_version' => 9,
+  'documentation' => 'A Rack server service.',
   'functions' =>
   [
     {
       'name' => 'run',
-      'documentation' => "Sayt todo \"hello\" to the world",
+      'documentation' => "Start the server",
       'arguments' =>
       [
         {
           'name' => 'callback',
           'type' => 'callback',
           'required' => true,
-          'documentation' => 'the callback to send a hello message to'
+          'documentation' => 'The callback for requests'
         },
         {
           'name' => 'port',
           'type' => 'integer',
           'required' => false,
-          'documentation' => 'the callback to send a hello message to'
+          'documentation' => 'Server port'
         }
       ]
     }
