@@ -1,6 +1,5 @@
 require 'webrick'
 require 'stringio'
-require 'rack/content_length'
 
 module Rack
   module Handler
@@ -15,21 +14,18 @@ module Rack
 
       def initialize(server, app)
         super server
-        @app = Rack::ContentLength.new(app)
+        @app = app
       end
 
       def service(req, res)
         env = req.meta_vars
         env.delete_if { |k, v| v.nil? }
 
-        env.update({"rack.version" => [0,1],
-                     "rack.input" => StringIO.new(req.body.to_s),
-                     "rack.errors" => $stderr,
-
-                     "rack.multithread" => true,
+        env.update({"rack.version"  => [0,1],
+                     "rack.input"   => req.body.to_s,
+                     "rack.multithread"  => true,
                      "rack.multiprocess" => false,
-                     "rack.run_once" => false,
-
+                     "rack.run_once"     => false,
                      "rack.url_scheme" => ["yes", "on", "1"].include?(ENV["HTTPS"]) ? "https" : "http"
                    })
 
@@ -44,6 +40,13 @@ module Rack
         end
 
         status, headers, body = @app.call(env)
+        
+        headers ||= {}
+        status  ||= 200
+        body    ||= ''
+        
+        headers['Content-Length'] = body.length
+        
         begin
           res.status = status.to_i
           headers.each { |k, vs|
@@ -59,7 +62,7 @@ module Rack
             res.body << part
           }
         ensure
-          body.close  if body.respond_to? :close
+          body.close if body.respond_to? :close
         end
       end
     end

@@ -1,17 +1,16 @@
-class Server < ::WEBrick::HTTPServlet::AbstractServlet
+bp_require 'rack/webrick'
+
+class Server
   def initialize(args)
   end
   
-  def initialize(server, app)
-    super server
-    @app = app
-  end
-  
-  def run
-    server = ::WEBrick::HTTPServer.new()
-    server.mount "/", Rack::Handler::WEBrick, app
-    trap(:INT) { server.shutdown }
-    server.start
+  def run(bp, args)
+    app = proc {|env| 
+      args['callback'].invoke(env) 
+    }
+    port = (args['port'] || 0)
+    Rack::Handler::WEBrick.run(app, :Port => port)
+    bp.complete(true)
   end
 end
 
@@ -21,21 +20,15 @@ rubyCoreletDefinition = {
   'name' => "Server",
   'major_version' => 1,
   'minor_version' => 0,
-  'micro_version' => 5,
+  'micro_version' => 2,
   'documentation' => 'A todo service that tests callbacks from ruby.',
   'functions' =>
   [
     {
-      'name' => 'browse',
+      'name' => 'run',
       'documentation' => "Sayt todo \"hello\" to the world",
       'arguments' =>
       [
-        {
-          'name' => 'service',
-          'type' => 'string',
-          'required' => true,
-          'documentation' => 'the callback to send a hello message to'
-        },
         {
           'name' => 'callback',
           'type' => 'callback',
@@ -43,35 +36,10 @@ rubyCoreletDefinition = {
           'documentation' => 'the callback to send a hello message to'
         },
         {
-          'name' => 'timeout',
+          'name' => 'port',
           'type' => 'integer',
           'required' => false,
           'documentation' => 'the callback to send a hello message to'
-        }
-      ]
-    },
-    {
-      'name' => 'register',
-      'documentation' => "todo",
-      'arguments' => 
-      [
-        {
-          'name' => 'name',
-          'type' => 'string',
-          'required' => true,
-          'documentation' => 'todo'
-        },
-        {
-          'name' => 'service',
-          'type' => 'string',
-          'required' => true,
-          'documentation' => 'todo'
-        },
-        {
-          'name' => 'port',
-          'type' => 'integer',
-          'required' => true,
-          'documentation' => 'todo'
         }
       ]
     }
