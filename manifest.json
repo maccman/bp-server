@@ -1,0 +1,14 @@
+{
+	"type": "dependent",
+	"uses": {
+		"corelet": "RubyInterpreter",
+		"version": "4"
+	},
+	"arguments": {"ScriptFile": "server.rb"},
+    "strings": {
+        "en": {
+            "title": "Server Service",
+            "summary": "A sample todo service which displays the string \"Hello World\"."
+        }
+    }
+}
