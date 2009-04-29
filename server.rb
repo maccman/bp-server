@@ -6,11 +6,13 @@ class Server
   
   def run(bp, args)
     app = proc {|env| 
-      args['callback'].invoke(env) 
+     args['callback'].invoke(env) 
     }
     port = (args['port'] || 0)
     Rack::Handler::WEBrick.run(app, :Port => port)
     bp.complete(true)
+  rescue Errno::EADDRINUSE => e
+    bp.error('addrInUse', 'Address is in use');
   end
 end
 
@@ -20,7 +22,7 @@ rubyCoreletDefinition = {
   'name' => "Server",
   'major_version' => 1,
   'minor_version' => 0,
-  'micro_version' => 6,
+  'micro_version' => 8,
   'documentation' => 'A todo service that tests callbacks from ruby.',
   'functions' =>
   [
